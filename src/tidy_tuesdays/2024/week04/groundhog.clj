@@ -31,6 +31,9 @@
 (def ds-predictions
   (tc/dataset predictions-source {:key-fn keyword}))
 
+;; The data source is [Groundhog-day.com](https://groundhog-day.com/predictions), the
+;; datasets here were prepared as part of the Tidy Tuesdays official repo.
+
 ;; ## Likihood of Spring
 ;; The 'predictions' dataset marks whether a groundhog sees their own shadow as
 ;; either "TRUE" or "FALSE" in the :shadow column. Let's write a function to aggregate those
@@ -39,12 +42,12 @@
 
 (defn calculate-likelihood-spring [shadow-col]
   (if (empty? shadow-col) nil
-    (let [valids (remove nil? shadow-col)
-          total  (count valids)
-          falses (count (filter #(= "FALSE" %) shadow-col))]
-      (if (pos? falses)
-        (float (/ falses total))
-        0))))
+      (let [valids (remove nil? shadow-col)
+            total  (count valids)
+            falses (count (filter #(= "FALSE" %) shadow-col))]
+        (if (pos? falses)
+          (float (/ falses total))
+          0))))
 
 
 (def consensus-predictions
@@ -191,7 +194,7 @@
 
 ;; My personal favourite is the 'Atlantic Lobster' groundhog (Lucy the Lobster).
 
-;; ### Spring Bias in 2023
+;; ### Regional Bias (2023)
 ;; Let's group the groundhogs by state, and see if there is a difference in likelihood
 ;; to predict a 'spring' by region for the year 2023.
 ;;
