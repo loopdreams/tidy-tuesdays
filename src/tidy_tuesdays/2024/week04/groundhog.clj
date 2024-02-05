@@ -2,13 +2,10 @@
 ;;
 (ns tidy-tuesdays.2024.week04.groundhog
   (:require
-   [aerial.hanami.common :as hc]
    [aerial.hanami.templates :as ht]
    [scicloj.noj.v1.vis.hanami :as hanami]
    [tablecloth.api :as tc]
-   [scicloj.kindly.v4.kind :as kind]
-   [scicloj.noj.v1.stats :as stats]
-   [scicloj.clay.v2.api :as clay]))
+   [scicloj.kindly.v4.kind :as kind]))
 
 
 ^:kindly/hide-code
@@ -71,10 +68,10 @@
                   :WIDTH 700
                   :SIZE 2}))
 
-;; As we can see, since 1970, the likihood of spring coming early has increased. However, it has
-;; also tended toward a 50-50 chance of the groundhog seeing their own shadow. In early times,
-;; spring was very unlikely to come early, with only three instances where the groundhog didn't see
-;; their own shadow from around 1986 to 1943 (57 years).
+;; As we can see, since 1970, the likelihood of a prediction of an early Spring has increased.
+;; However, it has also tended toward a 50% chance of an early Spring being predicted.
+;; In years prior to 1970, an early Spring was very unlikely to be predicted,
+;; with only three instances where the groundhog didn't see their own shadow from around 1986 to 1943 (57 years).
 ;;
 ;; Below are a few more attempts to visualise this phenomena:
 
@@ -87,7 +84,8 @@
                   :HEIGHT 100
                   :COLOR {:field :spring-likelihood :type :quantitative}}))
 
-;; Aggregate predictions since 1970:
+;; Another visualisation of the same phenomena, with the 'Tie' cases removed,
+;; and taking only the years since 1970:
 
 (kind/vega
  {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
@@ -104,11 +102,11 @@
   :config {:axis {:grid true :tickBand :extent}}})
 
 
-;; In the early years, there was only one groundhog. It seems that
-;; as more and more groundhogs get added, there is more disagreement, tending
-;; towards 50-50 predictions.
+;; In earlier years, there was only one groundhog. It seems that
+;; as more and more groundhogs were added, there was more disagreement, with the result
+;; that 50-50 predictions were more likely.
 ;;
-;; Here is how the number of groundhogs have increased over time:
+;; For context, here is how the number of groundhogs have increased over time:
 
 (-> ds-predictions
     (tc/group-by :year)
