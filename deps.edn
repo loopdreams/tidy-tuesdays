@@ -4,4 +4,5 @@
          org.scicloj/clay {:mvn/version "2-alpha78"}
          org.scicloj/noj {:mvn/version "1-alpha22"}}
  :aliases
- {:neil {:project {:name tidy-tuesdays/tidy-tuesdays}}}}
+ {:neil {:project {:name tidy-tuesdays/tidy-tuesdays}}
+  :build-html {:exec-fn tidy-tuesdays.make-html/make-fn}}}
