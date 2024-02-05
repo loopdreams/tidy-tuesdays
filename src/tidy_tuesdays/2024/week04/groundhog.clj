@@ -34,22 +34,6 @@
 (def ds-predictions
   (tc/dataset predictions-source {:key-fn keyword}))
 
-;; Having a look at some key columns in the 'Groundhog' dataset...
-(kind/table
- (-> ds-groundhogs
-     (tc/drop-columns [:slug
-                       :source
-                       :shortname
-                       :current_prediction
-                       :is_groundhog
-                       :city
-                       :active
-                       :latitude
-                       :longitude
-                       :description
-                       :image])))
-
-
 ;; ## Likihood of Spring
 ;; The 'predictions' dataset marks whether a groundhog sees their own shadow as
 ;; either "TRUE" or "FALSE" in the :shadow column. Let's write a function to aggregate those
@@ -103,19 +87,7 @@
                   :HEIGHT 100
                   :COLOR {:field :spring-likelihood :type :quantitative}}))
 
-(kind/vega
- {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
-  :data {:values (-> consensus-predictions
-                     (tc/drop-rows #(= "Tie" (% :prediction)))
-                     (tc/rows :as-maps))}
-  :mark :rect
-  :encoding {:y {:field :prediction :type :nominal}
-             :x {:field :year :type :ordinal}
-             :color {:field :spring-likelihood :type :quantitative
-                     :scale {:scheme "blueorange"}}}
-  :config {:axis {:grid true :tickBand :extent}}})
-
-;; The same chart, limited to only predictions after 1970:
+;; Aggregate predictions since 1970:
 
 (kind/vega
  {:$schema "https://vega.github.io/schema/vega-lite/v5.json"
