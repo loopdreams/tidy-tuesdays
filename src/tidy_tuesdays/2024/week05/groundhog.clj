@@ -1,6 +1,6 @@
-;; # Week 4: Groundhog Predictions
+;; # Week 5: Groundhog Predictions
 ;;
-(ns tidy-tuesdays.2024.week04.groundhog
+(ns tidy-tuesdays.2024.week05.groundhog
   (:require
    [aerial.hanami.templates :as ht]
    [scicloj.noj.v1.vis.hanami :as hanami]
@@ -9,9 +9,9 @@
 
 
 ^:kindly/hide-code
-(def groundhogs-source "data/2024/week04/groundhogs.csv")
+(def groundhogs-source "data/2024/week05/groundhogs.csv")
 ^:kindly/hide-code
-(def predictions-source "data/2024/week04/predictions.csv")
+(def predictions-source "data/2024/week05/predictions.csv")
 
 ;; ## Context
 ;;
