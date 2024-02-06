@@ -13,5 +13,5 @@
     :clean-up-target-dir true}))
 
 (comment
-  (make-fn)
+  (make-fn nil)
   (clay/browse!))
