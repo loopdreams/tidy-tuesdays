@@ -7,6 +7,7 @@
    {:format [:quarto :html]
     :book {:title "Clojure Tidy Tuesdays"}
     :base-source-path "src/tidy_tuesdays/2024"
+    :show nil
     :base-target-path "book"
     :source-path ["index.clj"
                   "week04/groundhog.clj"]

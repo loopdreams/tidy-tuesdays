@@ -34,14 +34,14 @@
 ;; The data source is [Groundhog-day.com](https://groundhog-day.com/predictions), the
 ;; datasets here were prepared as part of the Tidy Tuesdays official repo.
 
-;; ## Likihood of Spring
+;; ## Likelihood of Spring
 ;; The 'predictions' dataset marks whether a groundhog sees their own shadow as
 ;; either "TRUE" or "FALSE" in the :shadow column. Let's write a function to aggregate those
 ;; values into an percentage likelihood that 'Spring' will come early (i.e., if the groundhog
 ;; doesn't see their shadow.)
 
 (defn calculate-likelihood-spring [shadow-col]
-  (if (empty? shadow-col) nil
+  (when (seq shadow-col)
       (let [valids (remove nil? shadow-col)
             total  (count valids)
             falses (count (filter #(= "FALSE" %) shadow-col))]
@@ -295,5 +295,5 @@
 ;; an early Spring being predicted (c. 50%).
 ;;
 ;; (b) The tradition is somehow rooted in science, and the increased instances of early Springs are
-;; reflective of global warming. Groundhogs are further strenghening the consensus of the scientific
+;; reflective of global warming. Groundhogs are further strengthening the consensus of the scientific
 ;; community!
