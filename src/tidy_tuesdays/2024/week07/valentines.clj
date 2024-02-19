@@ -1,4 +1,4 @@
-;; # Week 07 - Valentine's Day Consumer Data
+;; # Week 7 - Valentine's Day Consumer Data
 
 (ns tidy-tuesdays.2024.week07.valentines
   (:require
@@ -9,9 +9,9 @@
    [scicloj.kindly.v4.kind :as kind]))
 
 
-;; ## introduction
+;; ## Introduction
 ;;
-;; This week's datasets are releted to consumer spending during valentines day from the National Retail Federation in the United States.
+;; This week's datasets are related to consumer spending during valentines day from the National Retail Federation in the United States.
 ;; There are three datasets, loaded below.
 ;;
 ;; I discovered later that the csv files contain a BOM, so the `clean-keyword` function removes this.
@@ -44,7 +44,7 @@
 ;;
 ;; Next, the average spend per item type.
 ;;
-;; First lets's restructure the data from a format that looks like
+;; First let's restructure the data from a format that looks like
 ;; `{:Year 2020 :Candy 23 :Flowers 56 ...}` to a format like this: `[{:year 2020 :type "Candy" :value 23} ...]`
 
 (def restructured-historical
@@ -165,10 +165,10 @@
 
 ;; ## Combining some of the data
 ;;
-;; So far, we know that **Jewlery** is the best in terms of the level of spending, but **Candy** is the most popular choice (at a lower cost).
+;; So far, we know that **Jewelry** is the best in terms of the level of spending, but **Candy** is the most popular choice (at a lower cost).
 ;; Let's imagine we are doing market research, which is the best item to invest in (combining both of these datapoints)?
 
-;; First, let's get the average popularity of an item across the age groups. I will also multiply the items by the 'SpendingCelbrating' column,
+;; First, let's get the average popularity of an item across the age groups. I will also multiply the items by the 'SpendingCelebrating' column,
 ;; to get a 'weighted' average. (I'm making this up as I go along, so not 100% sure on the methodology here)
 
 (def valentines-items (-> gifts_age
