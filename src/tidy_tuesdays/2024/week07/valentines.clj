@@ -70,13 +70,13 @@
                   :SIZE 3
                   :WIDTH 500}))
 
-;; Let's rank the items by total spend over the period:
+;; Let's rank the items by average spend over the period:
 
 (def items-avg-spend
   (-> restructured-historical
       (tc/dataset)
       (tc/group-by :type)
-      (tc/aggregate {:avg-spend #(reduce + (% :value))})
+      (tc/aggregate {:avg-spend #(/ (reduce + (% :value)) (count (% :value)))})
       (tc/rename-columns {:$group-name :Item})))
 
 (-> items-avg-spend
