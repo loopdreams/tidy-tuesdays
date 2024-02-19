@@ -11,7 +11,8 @@
     :base-target-path "book"
     :source-path ["index.clj"
                   "week05/groundhog.clj"
-                  "week06/heritage.clj"]
+                  "week06/heritage.clj"
+                  "week07/valentines.clj"]
     :clean-up-target-dir true}))
 
 (comment
