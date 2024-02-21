@@ -94,11 +94,11 @@
 
 (defn items-split [data color]
   (reduce (fn [result entry]
-            (let [gender (color entry)
+            (let [colr (color entry)
                   ks (keys (dissoc entry color))]
               (conj result
                     (for [k ks]
-                      {:Gender gender
+                      {color colr
                        :Percent (k entry)
                        :Item (name k)}))))
           []
@@ -203,7 +203,7 @@
  (-> item-average-popularity
     (tc/inner-join items-avg-spend :Item)))
 
-;; Now, let's calculate a 'score' (populatity * cost), and sort the items by the highest score:
+;; Now, let's calculate a 'score' (popularity * cost), and sort the items by the highest score:
 
 (kind/table
  (-> item-average-popularity
