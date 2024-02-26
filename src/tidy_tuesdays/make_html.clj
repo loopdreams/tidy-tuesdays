@@ -12,7 +12,8 @@
     :source-path ["index.clj"
                   "week05/groundhog.clj"
                   "week06/heritage.clj"
-                  "week07/valentines.clj"]
+                  "week07/valentines.clj"
+                  "week08/grants.clj"]
     :clean-up-target-dir true}))
 
 (comment

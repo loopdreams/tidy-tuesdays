@@ -9,12 +9,11 @@
    [aerial.hanami.templates :as ht]))
 
 ;; ## Introduction
-;; This week's dataset contains information about the R Consortium Infrastructure Steering Committe (ISC) Grant Program.
+;; This week's dataset contains information about the R Consortium Infrastructure Steering Committee (ISC) Grant Program.
 ;;
 ;; Grants have been provided since 2016
 
 (def DS (tc/dataset "data/2024/week08/isc_grants.csv" {:key-fn keyword}))
-
 
 (kind/table
  (-> DS (tc/info :columns)))
@@ -34,9 +33,12 @@
   (->> (str/split string #" ")
        (map str/lower-case)
        (map #(str/replace % #"[():“”-]" ""))
-       (remove (into #{} stopwords))))
-;; ### 
-;; Top 10 Keywords in Titles
+       (map #(str/replace % #"[\,\.\n]" " "))
+       (map str/trim)
+       (remove (into #{} stopwords))
+       (remove #{""})))
+
+;; ### Top 10 Keywords in Titles
 (kind/md
  (str/join "\n"
            (for [kw
@@ -49,7 +51,6 @@
                   (take 10))
                  :let [[word count] kw]]
              (str "* " word " (" count ")"))))
-
 
 ;; Unsurprisingly, 'R' is the top keyword. Let's look at the titles containing the word **spatial**:
 
@@ -118,7 +119,7 @@
 ;;
 ;; What is perhaps more interesting is when the averaged costs are taken.
 ;;
-;; Out of interest, let's take a look at the projects with 'ongoing in the title:
+;; Out of interest, let's take a look at the projects with 'ongoing' in the title:
 
 (kind/table
  (-> DS
@@ -127,9 +128,119 @@
 
 ;; Just one entry! And an expensive project (containing the two most 'expensive' words)
 
-;; ## Keywords in summaries
-;; TODO
+;; ### Keywords in summaries
+;;
+;; Let's adopt the same methodology as above, but with the summary texts.
 
+(kind/md
+ (str/join "\n"
+           (for [kw
+                 (->>
+                  (apply str (:summary DS))
+                  split-words
+                  frequencies
+                  (sort-by val)
+                  reverse
+                  (take 20))
+                 :let [[word count] kw]]
+             (str "* " word " (" count ")"))))
+
+
+
+;; Let's try make a word cloud with these words using Vega:
+
+(kind/vega
+ {:$schema "https://vega.github.io/schema/vega/v5.json"
+  :width   800
+  :height  400
+  :padding 0
+  :data    [{:name   "table"
+             :values [(apply str (:summary DS))]
+             :transform
+             [{:type "countpattern"
+               :field "data"
+               :case "upper"
+               :pattern "[\\w']{3,}"
+               :stopwords (str "(" (str/join "|" stopwords) ")")}
+              {:type "formula" :as "angle"
+               :expr "[-45, 0, 45][~~(random() * 3)]"}]}]
+  :scales  [{:name   "color"
+             :type   "ordinal"
+             :domain {:data "table" :field "text"}
+             :range  ["#d5a928", "#652c90", "#939597"]}]
+  :marks   [{:type   "text"
+             :from   {:data "table"}
+             :encode {:enter
+                      {:text     {:field "text"}
+                       :align    {:value "center"}
+                       :baseline {:value "alphabetic"}
+                       :fill     {:scale "color" :field "text"}}
+                      :update {:fillOpacity {:value 1}}
+                      :hover  {:fillOpacity {:value 0.5}}}
+             :transform
+             [{:type          "wordcloud"
+               :size          [800 400]
+               :text          {:field :text}
+               :rotate        {:field "datum.angle"}
+               :font          "Helvetica Neue, Arial"
+               :fontSize      {:field "datum.count"}
+               :fontWeight     600
+               :fontSizeRange [12, 56]
+               :padding       2}]}]})
+
+;; Finally, let's look at the words in close proximity to 'r'
+
+(def r-splits
+  (->> (apply str (:summary DS))
+       split-words
+       (partition-by (fn [word] (= word "r")))
+       (remove (fn [coll] (= (first coll) "r")))))
+
+
+
+(def words-before-r (map last (drop-last r-splits)))
+(def words-after-r (map first (rest r-splits)))
+
+;; ### Words in Close Proximity to 'R' in summaries
+
+(kind/vega
+ {:$schema "https://vega.github.io/schema/vega/v5.json"
+  :width   800
+  :height  400
+  :padding 0
+  :data    [{:name   "table"
+             :values [(str/join #" " (concat words-after-r words-before-r))]
+             :transform
+             [{:type "countpattern"
+               :field "data"
+               :case "upper"
+               :pattern "[\\w']{3,}"
+               :stopwords ""}
+              {:type "formula" :as "angle"
+               :expr "[-45, 0, 45][~~(random() * 3)]"}]}]
+  :scales  [{:name   "color"
+             :type   "ordinal"
+             :domain {:data "table" :field "text"}
+             :range  ["#d5a928", "#652c90", "#939597"]}]
+  :marks   [{:type   "text"
+             :from   {:data "table"}
+             :encode {:enter
+                      {:text     {:field "text"}
+                       :align    {:value "center"}
+                       :baseline {:value "alphabetic"}
+                       :fill     {:scale "color" :field "text"}}
+                      :update {:fillOpacity {:value 1}}
+                      :hover  {:fillOpacity {:value 0.5}}}
+             :transform
+             [{:type          "wordcloud"
+               :size          [800 400]
+               :text          {:field :text}
+               :rotate        {:field "datum.angle"}
+               :font          "Helvetica Neue, Arial"
+               :fontSize      {:field "datum.count"}
+               :fontWeight     600
+               :fontSizeRange [12, 56]
+               :padding       2}]}]})
 
 ;; ## Funding Levels by year
 
@@ -193,7 +304,9 @@
   :title {:text "R ISC Grants"
           :subtitle "Projects Funded by Year"}})
 
-;; This graph doesn't align too well with the total funding provided. Let's look at the 'best value' years by dividing the total funding by projects.
+;; While the levels of funding can vary quite a bit, the number of projects funded per year seems more constant.
+;;
+;; Let's look at the 'best value' years by dividing the total funding by projects.
 ;;
 ;; In this case, I won't look at whether they were spring/fall projects, and will also ignore 2023 (only a half-year of data).
 
@@ -207,7 +320,9 @@
                  {:X :year :XTYPE :temporal
                   :Y :funding-per-project
                   :SIZE 4
-                  :TITLE "Best Value Year"}))
+                  :TITLE "Average Cost per Project"}))
+
+;; 2021 had the best 'value' projects...
 
 (-> DS
     (tc/drop-rows #(= 2023 (% :year)))
@@ -223,10 +338,20 @@
 
 ;; Looks like 2021 was the best year in terms of the most number of projects at the lowest cost.
 ;;
-;; Let's look at all of those projects for that year:
+;; ## Successful Developers
+
+;; Finally, let's have a quick look at the most successful applicants. The third column 'percentage total' is the percentage of the total
+;; grant funding provided throughout the lifetime of this program.
+
 
 (kind/table
- (-> DS
-     (tc/select-rows #(= 2021 (% :year)))
-     (tc/select-columns [:title :funded :summary])
-     (tc/order-by :funded :desc)))
+ (let [total-funding-provided (reduce + (:funded DS))]
+   (-> DS
+       (tc/group-by :proposed_by)
+       (tc/aggregate {:funding-secured #(reduce + (% :funded))
+                      :projects #(tc/row-count %)})
+       (tc/map-columns :percentage-total [:funding-secured]
+                       #(int (* 100 (/ % total-funding-provided))))
+       (tc/rename-columns {:$group-name :Proposed-By})
+       (tc/order-by [:percentage-total :funding-secured] [:desc :desc])
+       (tc/select-rows (range 10)))))
