@@ -1,4 +1,4 @@
-;; # Week 9: Leap Day
+;; # Week 9 - Leap Day
 
 (ns tidy-tuesdays.2024.week09.leap-day
   (:require

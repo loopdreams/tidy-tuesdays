@@ -1,4 +1,4 @@
-;; # Week 5: Groundhog Predictions
+;; # Week 5 - Groundhog Predictions
 ;;
 (ns tidy-tuesdays.2024.week05.groundhog
   (:require
