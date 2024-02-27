@@ -13,7 +13,8 @@
                   "week05/groundhog.clj"
                   "week06/heritage.clj"
                   "week07/valentines.clj"
-                  "week08/grants.clj"]
+                  "week08/grants.clj"
+                  "week09/leap_day.clj"]
     :clean-up-target-dir true}))
 
 (comment
