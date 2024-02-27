@@ -156,8 +156,8 @@
   :encoding {:x {:field :Item :sort "-y"
                  :axis {:labelAngle -45}}
              :y {:field :Percent :type :quantitative}
-             :xOffset {:field :Gender}
-             :color {:field :Gender :scale {:scheme "blues"}}}
+             :xOffset {:field :Age}
+             :color {:field :Age :scale {:scheme "blues"}}}
   :title {:text "Valentine's Day"
           :subtitle "Spending Trends By Age Group"}})
 
